@@ -26,8 +26,16 @@ data class KwebProperties(
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(KwebProperties::class)
 class KwebConfiguration {
-    @Bean(destroyMethod = "close")
-    fun kweb(buildProperties: BuildProperties, kwebProperties: KwebProperties): Kweb {
+    @Bean(
+        // On the spring's shutdown process, close the kweb server.
+        destroyMethod = "close"
+    )
+    fun kweb(
+        // Use configurationProperty
+        kwebProperties: KwebProperties,
+        // This is just a example to load the bean, initialized by spring.
+        buildProperties: BuildProperties,
+    ): Kweb {
         return Kweb(port = kwebProperties.port) {
             doc.body {
                 h1().text(
